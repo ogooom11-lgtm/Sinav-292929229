@@ -677,17 +677,17 @@ class _ExamScreenState extends State<ExamScreen> {
           padding: const EdgeInsets.all(18),
           decoration: BoxDecoration(
             gradient: LinearGradient(
-              colors: [AppColors.primaryLight, AppColors.primaryLight.withOpacity(0.5)],
+              colors: [AppColors.primaryLight, AppColors.primaryLight.withValues(alpha: 0.5)],
               begin: Alignment.centerRight,
               end: Alignment.centerLeft,
             ),
             borderRadius: BorderRadius.circular(18),
             border: Border.all(
-              color: AppColors.primary.withOpacity(0.3),
+              color: AppColors.primary.withValues(alpha: 0.3),
             ),
             boxShadow: [
               BoxShadow(
-                color: AppColors.primary.withOpacity(0.08),
+                color: AppColors.primary.withValues(alpha: 0.08),
                 blurRadius: 12,
                 offset: const Offset(0, 4),
               ),
@@ -768,7 +768,7 @@ class _ExamScreenState extends State<ExamScreen> {
               color: AppColors.successLight,
               borderRadius: BorderRadius.circular(16),
               border: Border.all(
-                color: AppColors.success.withOpacity(0.2),
+                color: AppColors.success.withValues(alpha: 0.2),
               ),
             ),
             child: Row(
@@ -792,7 +792,7 @@ class _ExamScreenState extends State<ExamScreen> {
                     children: [
                       Text(
                         'تم ربط ${_currentMatchAnswer.length} زوجاً',
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.w700,
                           color: AppColors.successDark,
@@ -829,9 +829,9 @@ class _ExamScreenState extends State<ExamScreen> {
     final isPaired = existingPair[1] != -1;
 
     return DragTarget<List<int>>(
-      onWillAccept: (data) => data != null,
-      onAccept: (data) {
-        final rightIdx = data[1];
+      onWillAcceptWithDetails: (data) => data.data != null,
+      onAcceptWithDetails: (data) {
+        final rightIdx = data.data[1];
         setState(() {
           final current = List<List<int>>.from(_matchAnswers[q.id] ?? []);
           current.removeWhere((p) => p[0] == leftIndex || p[1] == rightIdx);
@@ -850,7 +850,7 @@ class _ExamScreenState extends State<ExamScreen> {
               color: isPaired
                   ? AppColors.successLight
                   : (isHovered
-                      ? AppColors.primaryLight.withOpacity(0.5)
+                      ? AppColors.primaryLight.withValues(alpha: 0.5)
                       : AppColors.surfaceWhite),
               borderRadius: BorderRadius.circular(16),
               border: Border.all(
@@ -864,8 +864,8 @@ class _ExamScreenState extends State<ExamScreen> {
               boxShadow: [
                 BoxShadow(
                   color: (isPaired || isHovered)
-                      ? AppColors.primary.withOpacity(0.1)
-                      : Colors.black.withOpacity(0.03),
+                      ? AppColors.primary.withValues(alpha: 0.1)
+                      : Colors.black.withValues(alpha: 0.03),
                   blurRadius: 10,
                   offset: const Offset(0, 4),
                 ),
@@ -910,7 +910,7 @@ class _ExamScreenState extends State<ExamScreen> {
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     decoration: BoxDecoration(
-                      color: AppColors.success.withOpacity(0.15),
+                      color: AppColors.success.withValues(alpha: 0.15),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: const Icon(
@@ -952,7 +952,7 @@ class _ExamScreenState extends State<ExamScreen> {
             borderRadius: BorderRadius.circular(14),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.25),
+                color: Colors.black.withValues(alpha: 0.25),
                 blurRadius: 20,
                 offset: const Offset(0, 8),
               ),
@@ -965,7 +965,7 @@ class _ExamScreenState extends State<ExamScreen> {
                 width: 32,
                 height: 32,
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.2),
+                  color: Colors.white.withValues(alpha: 0.2),
                   shape: BoxShape.circle,
                 ),
                 child: Center(
@@ -1029,7 +1029,7 @@ class _ExamScreenState extends State<ExamScreen> {
           ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.03),
+              color: Colors.black.withValues(alpha: 0.03),
               blurRadius: 8,
               offset: const Offset(0, 2),
             ),
