@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>معاينة تصميم سؤال الوصل</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F7F9FB; --white:#fff; --text:#1F2A33; --muted:#6B7A87; --divider:#E3E9EE;
+    --primary:#2E7D5B; --primaryLight:#E8F4EC; --primaryDark:#1B5E3F;
+    --info:#1565C0; --infoLight:#E3F2FD;
+    --success:#2E7D32; --successLight:#E8F5E9; --successDark:#1B5E20;
+    --error:#C62828;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  body{
+    margin:0; padding:24px 12px 60px; background:#eef2f6; color:var(--text);
+    font-family:'Tajawal','Amiri',system-ui,sans-serif;
+    display:flex; justify-content:center;
+  }
+  .phone{
+    width:100%; max-width:430px; background:var(--bg); border-radius:28px;
+    box-shadow:0 24px 60px rgba(20,40,60,.18); overflow:hidden;
+    border:1px solid #dfe8ee;
+  }
+  .appbar{
+    height:56px; display:flex; align-items:center; justify-content:center;
+    background:var(--bg); font-size:16px; font-weight:700; color:var(--text);
+    position:relative;
+  }
+  .appbar .back{position:absolute; right:14px; color:var(--text); font-size:18px; opacity:.75}
+  .progressline{height:4px;background:var(--divider)}
+  .progressline > i{display:block;height:100%;width:70%;background:var(--primary)}
+  .body{padding:18px 16px 26px}
+
+  .qcard{
+    background:var(--white); border:1px solid var(--divider); border-radius:22px;
+    padding:18px 16px; box-shadow:0 6px 18px rgba(20,40,60,.05);
+  }
+  .chiprow{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+  .chip{
+    display:inline-flex;align-items:center;gap:8px;background:var(--primaryLight);
+    color:var(--primaryDark);font-weight:700;font-size:13px;padding:6px 10px;border-radius:10px;
+  }
+  .qtext{font-size:18px;line-height:1.85;margin:0 0 18px}
+
+  /* --- بطاقة الإرشاد --- */
+  .guide{
+    display:flex;gap:12px;align-items:flex-start;padding:14px 16px;border-radius:18px;
+    background:linear-gradient(to left,#EAF6EF,#F8FCFA);
+    border:1px solid rgba(46,125,91,.22);
+  }
+  .guide .ic{
+    width:38px;height:38px;flex:0 0 38px;border-radius:12px;display:grid;place-items:center;
+    background:linear-gradient(135deg,#2E7D5B,#1B5E3F);color:#fff;font-size:18px;
+    box-shadow:0 4px 10px rgba(46,125,91,.28);
+  }
+  .guide p{margin:0;font-size:13px;line-height:1.7;color:var(--primaryDark);font-weight:600}
+
+  /* --- التقدم --- */
+  .proghead{display:flex;align-items:center;gap:6px;margin:16px 0 8px;font-size:13.5px;font-weight:700;color:var(--primaryDark)}
+  .proghead .spacer{flex:1}
+  .countpill{font-size:12.5px;font-weight:700;padding:4px 10px;border-radius:20px;background:var(--primaryLight);color:var(--primaryDark);transition:.3s}
+  .countpill.done{background:var(--successLight);color:var(--successDark)}
+  .track{height:8px;border-radius:20px;background:var(--divider);overflow:hidden}
+  .track > i{display:block;height:100%;width:0;border-radius:20px;background:var(--primary);transition:width .45s cubic-bezier(.2,.8,.3,1),background .3s}
+
+  /* --- رؤوس الأعمدة --- */
+  .cols{display:flex;gap:12px;margin-top:18px}
+  .col{flex:1;min-width:0}
+  .colhead{
+    display:flex;align-items:center;gap:6px;padding:9px 10px;border-radius:12px;
+    font-size:12.5px;font-weight:700;margin-bottom:10px;border:1px solid transparent;
+  }
+  .colhead small{display:block;font-size:10px;font-weight:500;opacity:.8}
+  .colhead.a{color:var(--primary);background:rgba(46,125,91,.08);border-color:rgba(46,125,91,.18)}
+  .colhead.b{color:var(--info);background:rgba(21,101,192,.08);border-color:rgba(21,101,192,.18)}
+
+  /* --- بطاقات العناصر --- */
+  .item{
+    display:flex;gap:9px;align-items:flex-start;padding:11px;margin-bottom:12px;border-radius:16px;
+    background:#fff;border:1.3px solid var(--divider);cursor:pointer;
+    box-shadow:0 3px 6px rgba(0,0,0,.03);transition:.22s ease;position:relative;
+  }
+  .item .num{
+    width:26px;height:26px;flex:0 0 26px;border-radius:50%;display:grid;place-items:center;
+    font-size:12.5px;font-weight:700;background:var(--primaryLight);color:var(--primaryDark);
+    border:1.3px solid var(--primary);transition:.22s;
+  }
+  .item.b .num{background:var(--info);border-color:var(--info);color:#fff}
+  .item .txt{font-size:13px;line-height:1.55;flex:1;min-width:0}
+  .item.selected{border-width:1.8px;transform:translateY(-1px)}
+  .item.a.selected{border-color:var(--primary);background:var(--primaryLight)}
+  .item.b.selected{border-color:var(--info);background:var(--infoLight)}
+  .item.linked{font-weight:600}
+  .badge{
+    align-self:flex-start;display:flex;align-items:center;gap:2px;color:#fff;font-size:11.5px;font-weight:700;
+    padding:3px 6px;border-radius:8px;flex:0 0 auto;
+  }
+  .item.dragging{opacity:.4}
+
+  /* --- ملاحظة اختلاف العدد --- */
+  .note{
+    display:flex;gap:8px;align-items:flex-start;padding:12px 14px;border-radius:14px;
+    background:var(--infoLight);border:1px solid rgba(21,101,192,.22);
+    color:var(--info);font-size:12px;line-height:1.6;font-weight:600;margin-top:4px;
+  }
+
+  /* --- أدوات --- */
+  .tools{display:flex;align-items:center;gap:10px;margin-top:14px}
+  .tools span{font-size:12px;color:var(--muted)}
+  .tools .spacer{flex:1}
+  .clear{
+    background:none;border:none;color:var(--error);font-family:inherit;font-size:13px;font-weight:600;
+    display:inline-flex;align-items:center;gap:6px;cursor:pointer;padding:6px 10px;border-radius:10px;
+  }
+  .clear:hover{background:rgba(198,40,40,.08)}
+
+  .doneband{
+    display:flex;gap:10px;align-items:center;padding:12px 14px;border-radius:14px;margin-top:10px;
+    background:var(--successLight);border:1px solid rgba(46,125,50,.3);
+    font-size:12.5px;line-height:1.5;font-weight:700;color:var(--successDark);
+    opacity:0;transform:translateY(6px);pointer-events:none;transition:.3s;
+  }
+  .doneband.show{opacity:1;transform:none}
+  .doneband .ck{width:26px;height:26px;flex:0 0 26px;border-radius:50%;background:var(--success);color:#fff;display:grid;place-items:center;font-size:13px}
+
+  /* --- شريط التنقل --- */
+  .nav{
+    display:flex;gap:12px;padding:16px;background:var(--bg);
+    border-top:1px solid var(--divider);border-radius:24px 24px 0 0;
+  }
+  .btn{
+    font-family:inherit;font-size:15px;font-weight:700;border-radius:14px;padding:15px 0;border:none;
+    cursor:pointer;transition:.25s;
+  }
+  .btn.ghost{flex:1;background:#fff;border:1.5px solid var(--primary);color:var(--primary)}
+  .btn.next{flex:2;background:var(--primary);color:#fff;box-shadow:0 6px 16px rgba(46,125,91,.25)}
+  .btn.next:disabled{background:#cfd9d4;color:#fff;box-shadow:none;cursor:not-allowed}
+  .btn.next:not(:disabled):active{transform:scale(.99)}
+
+  .toast{
+    position:fixed;bottom:26px;left:50%;transform:translate(-50%,20px);
+    background:#263238;color:#fff;font-size:12.5px;padding:11px 16px;border-radius:14px;
+    max-width:360px;text-align:center;line-height:1.6;opacity:0;pointer-events:none;
+    transition:.28s;box-shadow:0 10px 26px rgba(0,0,0,.25);z-index:9;
+  }
+  .toast.show{opacity:1;transform:translate(-50%,0)}
+  .hint{max-width:430px;margin:16px auto 0;font-size:12.5px;color:#5b6b78;text-align:center;line-height:1.8}
+  .hint b{color:var(--primaryDark)}
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="appbar"><span class="back">‹</span>سؤال 7 من 10</div>
+  <div class="progressline"><i></i></div>
+  <div class="body">
+    <div class="qcard">
+      <div class="chiprow">
+        <div class="chip">🔗 وصل</div>
+        <div class="chip" id="resultChip" style="display:none;background:#FFEBEE;color:#C62828">خطأ ❌</div>
+      </div>
+      <p class="qtext">صِل العبارة من العمود (أ) بما يناسبها من العمود (ب)</p>
+
+      <div class="guide">
+        <div class="ic">☝</div>
+        <p>اضغط على عبارة من العمود (أ) ثم على ما يناسبها من العمود (ب)، أو اسحب العنصر وأفلته على مقابله.</p>
+      </div>
+
+      <div class="proghead">
+        <span id="progIcon">🔗</span>
+        <span id="progLabel">الربط</span>
+        <span class="spacer"></span>
+        <span class="countpill" id="count">0 / 4</span>
+      </div>
+      <div class="track"><i id="bar"></i></div>
+
+      <div class="cols">
+        <div class="col">
+          <div class="colhead a">
+            <span>≡</span>
+            <div>العمود (أ)<small>العبارات</small></div>
+          </div>
+          <div id="colA"></div>
+        </div>
+        <div class="col">
+          <div class="colhead b">
+            <span>A</span>
+            <div>العمود (ب)<small>المقابل</small></div>
+          </div>
+          <div id="colB"></div>
+        </div>
+      </div>
+
+      <div class="note">
+        <span>ⓘ</span>
+        <div>في العمود (ب) عنصر واحد بدون مقابل، لذلك يكفي ربط 4 أزواج فقط.</div>
+      </div>
+
+      <div class="tools">
+        <span>اضغط على أي عنصر مرتبط لفك ربطه</span>
+        <span class="spacer"></span>
+        <button class="clear" id="clearAll">⛓ فك ربط الكل</button>
+      </div>
+
+      <div class="doneband" id="doneband">
+        <span class="ck">✓</span>
+        <div>تم ربط جميع العناصر المطلوبة، يمكنك الانتقال للسؤال التالي.</div>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast"></div>
+  <div class="nav">
+    <button class="btn ghost">السابق</button>
+    <button class="btn next" id="nextBtn" disabled>التالي</button>
+  </div>
+</div>
+
+<div class="hint">
+  معاينة تفاعلية للتصميم الجديد — جرّب الربط بالنقر لترى <b>زر «التالي» يتفعّل عند 4 من 4</b>.
+</div>
+
+<script>
+  const LEFT = [
+    'الحدث الأصغر',
+    'الحدث الأكبر',
+    'الماء الطهور',
+    'السؤر',
+  ];
+  const RIGHT = [
+    'ما يجب به الوضوء',
+    'ما يجب به الغسل',
+    'الطاهر في ذاته المطهر لغيره',
+    'ما بقي في الإناء بعد شرب الشارب منه',
+    'ما بلغ قلتين فأكثر',
+  ];
+  const LETTERS = ['أ','ب','ج','د','هـ','و'];
+  const PALETTE = ['#2E7D5B','#1565C0','#8E24AA','#EF6C00','#00838F','#C2185B'];
+  const REQUIRED = Math.min(LEFT.length, RIGHT.length);
+
+  let pairs = [];          // [[leftIdx, rightIdx], ...]
+  let selLeft = null, selRight = null;
+
+  const colA = document.getElementById('colA');
+  const colB = document.getElementById('colB');
+  const countEl = document.getElementById('count');
+  const barEl = document.getElementById('bar');
+  const nextBtn = document.getElementById('nextBtn');
+  const doneband = document.getElementById('doneband');
+  const progIcon = document.getElementById('progIcon');
+  const progLabel = document.getElementById('progLabel');
+
+  const pairOfLeft = i => pairs.find(p => p[0] === i);
+  const pairOfRight = j => pairs.find(p => p[1] === j);
+
+  function link(i, j){
+    const already = pairs.some(p => p[0] === i && p[1] === j);
+    if (!already && pairs.length >= REQUIRED) {
+      const t = document.getElementById('toast');
+      t.textContent = `لقد ربطت ${REQUIRED} أزواج، وهي المطلوبة. اضغط على أي عنصر لفك ربطه.`;
+      t.classList.add('show');
+      clearTimeout(t._h);
+      t._h = setTimeout(() => t.classList.remove('show'), 2200);
+      return;
+    }
+    pairs = pairs.filter(p => p[0] !== i && p[1] !== j);
+    pairs.push([i, j]);
+    selLeft = selRight = null;
+    render();
+  }
+
+  function render(){
+    colA.innerHTML = '';
+    LEFT.forEach((text, i) => {
+      const pair = pairOfLeft(i);
+      const linked = !!pair;
+      const color = linked ? PALETTE[i % PALETTE.length] : null;
+      const el = document.createElement('div');
+      el.className = 'item a' + (linked ? ' linked' : '') + (selLeft === i ? ' selected' : '');
+      el.style.background = linked ? color + '17' : '';
+      el.style.borderColor = linked ? color : (selLeft === i ? '#2E7D5B' : '');
+      el.style.boxShadow = linked ? `0 4px 12px ${color}24` : '';
+      el.innerHTML = `
+        <div class="num" style="${linked ? `background:${color};border-color:${color};color:#fff` : ''}">${i + 1}</div>
+        <div class="txt">${text}</div>
+        ${linked ? `<div class="badge" style="background:${color}">🔗 ${LETTERS[pair[1]]}</div>` : ''}
+      `;
+      el.onclick = () => {
+        if (linked) { pairs = pairs.filter(p => p[0] !== i); selLeft = i; selRight = null; render(); return; }
+        if (selRight !== null) { link(i, selRight); return; }
+        selLeft = (selLeft === i) ? null : i;
+        render();
+      };
+      colA.appendChild(el);
+    });
+
+    colB.innerHTML = '';
+    RIGHT.forEach((text, j) => {
+      const pair = pairOfRight(j);
+      const linked = !!pair;
+      const color = linked ? PALETTE[pair[0] % PALETTE.length] : '#1565C0';
+      const el = document.createElement('div');
+      el.className = 'item b' + (linked ? ' linked' : '') + (selRight === j ? ' selected' : '');
+      el.style.background = linked ? color + '17' : '';
+      el.style.borderColor = linked ? color : (selRight === j ? '#1565C0' : '');
+      el.style.boxShadow = linked ? `0 4px 12px ${color}24` : '';
+      el.innerHTML = `
+        <div class="num" style="background:${color};border-color:${color};color:#fff">${LETTERS[j]}</div>
+        <div class="txt">${text}</div>
+        ${linked ? `<div class="badge" style="background:${color}">🔗 ${pair[0] + 1}</div>` : ''}
+      `;
+      el.onclick = () => {
+        if (linked) { pairs = pairs.filter(p => p[1] !== j); selRight = j; selLeft = null; render(); return; }
+        if (selLeft !== null) { link(selLeft, j); return; }
+        selRight = (selRight === j) ? null : j;
+        render();
+      };
+      colB.appendChild(el);
+    });
+
+    const done = Math.min(pairs.length, REQUIRED);
+    const complete = pairs.length >= REQUIRED;
+    countEl.textContent = `${done} / ${REQUIRED}`;
+    barEl.style.width = (REQUIRED ? done / REQUIRED * 100 : 0) + '%';
+    barEl.style.background = complete ? '#2E7D32' : '#2E7D5B';
+    countEl.classList.toggle('done', complete);
+    progIcon.textContent = complete ? '✅' : '🔗';
+    progLabel.textContent = complete ? 'أتممت الربط' : 'الربط';
+    progLabel.style.color = complete ? '#1B5E20' : '#1B5E3F';
+    nextBtn.disabled = !complete;
+    doneband.classList.toggle('show', complete);
+  }
+
+  document.getElementById('clearAll').onclick = () => { pairs = []; selLeft = selRight = null; render(); };
+  render();
+</script>
+</body>
+</html>

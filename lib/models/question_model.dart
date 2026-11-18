@@ -85,21 +85,102 @@ class QuestionModel {
     return answer.trim().toLowerCase() == userAnswer.trim().toLowerCase();
   }
 
+  /// حروف العمود (ب) بالترتيب
+  static const List<String> matchLetters = [
+    'أ',
+    'ب',
+    'ج',
+    'د',
+    'هـ',
+    'و',
+    'ز',
+    'ح',
+    'ط',
+    'ي',
+  ];
+
+  /// حرف/رقم العنصر في العمود (ب)
+  static String matchLetter(int index) {
+    if (index >= 0 && index < matchLetters.length) return matchLetters[index];
+    return '${index + 1}';
+  }
+
+  /// الأزواج الصحيحة التي تقع فهارسها داخل حدود العمودين
+  List<List<int>> get validCorrectPairs => correctPairs
+      .where(
+        (p) =>
+            p.length >= 2 &&
+            p[0] >= 0 &&
+            p[0] < leftItems.length &&
+            p[1] >= 0 &&
+            p[1] < rightItems.length,
+      )
+      .toList();
+
+  /// عدد الأزواج المطلوب ربطها.
+  ///
+  /// قد يختلف عدد عناصر العمودين (مثال: 4 مقابل 5)، لذلك المطلوب هو
+  /// أقل عدد بين العمودين — والعنصر الزائد يبقى بدون مقابل.
+  int get matchingRequiredPairs {
+    final leftCount = leftItems.length;
+    final rightCount = rightItems.length;
+    final keyCount = validCorrectPairs.length;
+
+    int columnMin;
+    if (leftCount == 0 && rightCount == 0) {
+      columnMin = 0;
+    } else if (leftCount == 0) {
+      columnMin = rightCount;
+    } else if (rightCount == 0) {
+      columnMin = leftCount;
+    } else {
+      columnMin = leftCount < rightCount ? leftCount : rightCount;
+    }
+
+    if (keyCount == 0) return columnMin;
+    if (columnMin == 0) return keyCount;
+    return keyCount < columnMin ? keyCount : columnMin;
+  }
+
+  /// عدد الأزواج التي ربطها المستخدم بشكل صحيح
+  int matchingCorrectCount(List<List<int>> userPairs) {
+    var count = 0;
+    for (final pair in userPairs) {
+      if (pair.length < 2) continue;
+      final isRight = correctPairs.any(
+        (c) => c.length >= 2 && c[0] == pair[0] && c[1] == pair[1],
+      );
+      if (isRight) count++;
+    }
+    return count;
+  }
+
   /// التحقق من صحة أزواج الوصل
+  ///
+  /// قد يختلف عدد عناصر العمودين (مثال: 4 مقابل 5)، فلا يُشترط ربط
+  /// العنصر الزائد، ويكفي ربط الأزواج الصحيحة المطلوبة دون أي ربط خاطئ.
   bool isMatchingCorrect(List<List<int>> userPairs) {
-    if (userPairs.length != correctPairs.length) return false;
-    // مقارنة irrespective of order
-    final sortedCorrect = List<List<int>>.from(correctPairs)
-      ..sort((a, b) => a[0].compareTo(b[0]));
-    final sortedUser = List<List<int>>.from(userPairs)
-      ..sort((a, b) => a[0].compareTo(b[0]));
-    for (int i = 0; i < sortedCorrect.length; i++) {
-      if (sortedCorrect[i][0] != sortedUser[i][0] ||
-          sortedCorrect[i][1] != sortedUser[i][1]) {
-        return false;
-      }
+    final key = validCorrectPairs;
+    if (userPairs.isEmpty || key.isEmpty) return false;
+    final required = matchingRequiredPairs;
+    if (userPairs.length < required) return false;
+    if (matchingCorrectCount(userPairs) < required) return false;
+    // لا يُقبل الجواب إذا ربط المستخدم عنصراً بعنصر خاطئ
+    for (final pair in userPairs) {
+      if (pair.length < 2) continue;
+      final isRight = key.any((c) => c[0] == pair[0] && c[1] == pair[1]);
+      if (!isRight) return false;
     }
     return true;
+  }
+
+  /// وصف موجز للأزواج الصحيحة (للمراجعة)
+  String get matchingAnswerText {
+    if (correctPairs.isEmpty) return '';
+    return correctPairs
+        .where((p) => p.length >= 2)
+        .map((p) => '${p[0] + 1} ← ${matchLetter(p[1])}')
+        .join('  •  ');
   }
 
   /// عرض نوع السؤال باللغة العربية

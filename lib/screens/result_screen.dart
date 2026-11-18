@@ -85,7 +85,12 @@ class _ResultScreenState extends State<ResultScreen>
       case QuestionType.matching:
         final pairs = widget.matchAnswers[q.id];
         if (pairs == null || pairs.isEmpty) return 'لم يتم الإجابة';
-        return 'تم ربط ${pairs.length} زوج';
+        final linked = pairs
+            .where((p) => p.length >= 2)
+            .map((p) =>
+                '${p[0] + 1} ← ${QuestionModel.matchLetter(p[1])}')
+            .join('  •  ');
+        return 'تم ربط ${pairs.length} زوج\n$linked';
     }
   }
 
@@ -103,7 +108,8 @@ class _ResultScreenState extends State<ResultScreen>
       case QuestionType.fillInBlank:
         return q.answer;
       case QuestionType.matching:
-        return 'انظر الأزواج الصحيحة في السؤال';
+        final text = q.matchingAnswerText;
+        return text.isEmpty ? '—' : text;
     }
   }
 
